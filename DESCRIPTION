@@ -1,0 +1,15 @@
+Package: relome
+Type: Package
+Title: Relations in omics data.
+Version: 0.1
+Date: 2016-05-23
+Author: Edi Prifti, Séverine Affeldt
+Maintainer: Edi Prifti <edi.prifti@gmail.com>
+Depends:
+    R (>= 2.15.0),
+Imports:
+    momr,
+Description: The relome package contains methods and functions for exploring relations among different variables. It also allows to visualize them using network abstractions.
+License: GPL (>= 2)
+LazyData: TRUE
+RoxygenNote: 5.0.1
