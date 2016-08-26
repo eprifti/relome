@@ -17,6 +17,7 @@
 ################################################################
 
 
+
 # This function plots tests, p and q values for relations using the phenoPairwiseRelations object
 plotRelations <- function(clin, ppr, rel.list, var.interest, threshold=0.05, 
                           verbose=FALSE, col=list(scatter="gold2",category=gray.colors(2))){
