@@ -1,9 +1,21 @@
-########################################################################
-# purpose: explore relations between variables
-# author: Edi PRIFTI
-# status: protected
-# date: March 9th 2016
-########################################################################
+################################################################
+#  _____       _                   ____            _           #
+# |_   _|     | |                 / __ \          (_)          #
+#   | |  _ __ | |_ ___  __ _ _ __| |  | |_ __ ___  _  ___ ___  #
+#   | | | '_ \| __/ _ \/ _` | '__| |  | | '_ ` _ \| |/ __/ __| #
+#   | |_| | | | ||  __| (_| | |  | |__| | | | | | | | (__\__ \ #
+# |_____|_| |_|\__\___|\__, |_|   \____/|_| |_| |_|_|\___|___/ #
+#                       __/ |                                  #
+#                      |___/                                   #
+################################################################
+
+################################################################
+# @script: relome.R
+# @note:explore relations between variables
+# @author: Edi Prifti
+# @date: August 2016
+################################################################
+
 
 # This function plots tests, p and q values for relations using the phenoPairwiseRelations object
 plotRelations <- function(clin, ppr, rel.list, var.interest, threshold=0.05, 
@@ -293,7 +305,25 @@ plotClinHistograms <- function(clin, clin.col = TRUE,
   dev.off()
 }
 
-
+#' main runRelome function.
+#'
+#' @title runRelome
+#' @description Runs the different functions that are needed to compute and visualize relations beween variables.
+#' @param data: a data frame containing the variables to explore
+#' @param interest:
+#' @param threshold:
+#' @param adjust:
+#' @param zoom.p: 
+#' @param verbose: 
+#' @param plot: If TRUE produce the co-relation graphics.
+#' @param mfrow: grid disposition of the graph (default:c(4,6))
+#' @param width: PDF width in inches (default:15)
+#' @param height: PDF heaight in inches (default:10)
+#' @param save.all: weather to save intermediary files (default:TRUE)
+#' @param return.all: weather to return all the results (default:TRUE)
+#' @param col: a list containg colot information for the graphs, scatterplots and tables.
+#' @return an object containing the different results
+#' @export
 runRelome <- function(data, interest = "", threshold=0.05, 
                       adjust = "BH", zoom.p = TRUE, verbose=TRUE,  plot=TRUE, 
                       mfrow = c(4,6), width = 15, height = 10, save.all=TRUE, rerun.all=FALSE,
@@ -342,6 +372,7 @@ runRelome <- function(data, interest = "", threshold=0.05,
 }
 
 
+
 lmp <- function (modelobject) {
   if (class(modelobject) != "lm") 
     stop("Not an object of class 'lm' ")
@@ -350,11 +381,5 @@ lmp <- function (modelobject) {
   attributes(p) <- NULL
   return(p)
 }
-
-# data("iris")
-# results <- runRelome(data = iris, interest = c("Species","Petal.Width"), threshold=1, 
-#                        adjust = "BH", zoom.p = TRUE, verbose=TRUE, plot=TRUE, 
-#                        mfrow = c(4,6), width = 15, height = 10, save.all=TRUE, rerun.all=TRUE,
-#                        col = list(scatter="gold2",category=gray.colors(2)))
 
 
