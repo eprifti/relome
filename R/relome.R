@@ -293,7 +293,25 @@ plotClinHistograms <- function(clin, clin.col = TRUE,
   dev.off()
 }
 
-
+#' main runRelome function.
+#'
+#' @title runRelome
+#' @description Runs the different functions that are needed to compute and visualize relations beween variables.
+#' @param data: a data frame containing the variables to explore
+#' @param interest:
+#' @param threshold:
+#' @param adjust:
+#' @param zoom.p: 
+#' @param verbose: 
+#' @param plot: If TRUE produce the co-relation graphics.
+#' @param mfrow: grid disposition of the graph (default:c(4,6))
+#' @param width: PDF width in inches (default:15)
+#' @param height: PDF heaight in inches (default:10)
+#' @param save.all: weather to save intermediary files (default:TRUE)
+#' @param return.all: weather to return all the results (default:TRUE)
+#' @param col: a list containg colot information for the graphs, scatterplots and tables.
+#' @return an object containing the different results
+#' @export
 runRelome <- function(data, interest = "", threshold=0.05, 
                       adjust = "BH", zoom.p = TRUE, verbose=TRUE,  plot=TRUE, 
                       mfrow = c(4,6), width = 15, height = 10, save.all=TRUE, rerun.all=FALSE,
@@ -350,11 +368,5 @@ lmp <- function (modelobject) {
   attributes(p) <- NULL
   return(p)
 }
-
-# data("iris")
-# results <- runRelome(data = iris, interest = c("Species","Petal.Width"), threshold=1, 
-#                        adjust = "BH", zoom.p = TRUE, verbose=TRUE, plot=TRUE, 
-#                        mfrow = c(4,6), width = 15, height = 10, save.all=TRUE, rerun.all=TRUE,
-#                        col = list(scatter="gold2",category=gray.colors(2)))
 
 
