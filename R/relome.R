@@ -69,21 +69,29 @@ plotRelations <- function(clin, ppr, rel.list, var.interest, threshold=0.05,
 
 plotPhenoRelations <- function(clin, ppr, rel.list, var.interest, threshold=0.05, verbose=FALSE, col=list(scatter="gold2",category=gray.colors(2))){
   y <- clin[,var.interest]
-  if(is.numeric(y)){
-    for(i in 1:length(rel.list)){
+  if(is.numeric(y))
+  {
+    for(i in 1:length(rel.list))
+    {
       if (verbose) print(paste(i,names(rel.list)[i]))
       x <- clin[,names(rel.list)[i]]
-      p <- extractSignificant(ppr$p, interest = names(rel.list)[i], threshold = threshold)[[1]][var.interest]
-      q <- extractSignificant(ppr$q, interest = names(rel.list)[i], threshold = threshold)[[1]][var.interest]
-      test <- ppr$test[var.interest,names(rel.list)[i]]
-      if(is.numeric(x)){
+      # p <- extractSignificant(ppr$p, interest = names(rel.list)[i], threshold = threshold)[[1]][var.interest]
+      # q <- extractSignificant(ppr$q, interest = names(rel.list)[i], threshold = threshold)[[1]][var.interest]
+      # get the test results
+      p <- ppr$p[var.interest, names(rel.list)[i]]
+      q <- ppr$q[var.interest, names(rel.list)[i]]
+      test <- ppr$test[var.interest, names(rel.list)[i]]
+      
+      if(is.numeric(x))
+      {
         plot(y~x, xlab=names(rel.list)[i], ylab=var.interest,
              bg=col$scatter, pch=21, main=paste(names(rel.list)[i],
                                                 "\np =", signif(p,digits=2),
                                                 "; q =", signif(q,digits=2),
                                                 "\ntest =", test))
         abline(lm(y~x),col="red")
-      }else{
+      }else
+      {
         boxplot(y~x, xlab=names(rel.list)[i], ylab=var.interest, notch=T, col=gray.colors(length(levels(x))),
                 pch=21, main=paste(names(rel.list)[i],
                                    "\np =", signif(p,digits=2),
@@ -91,23 +99,30 @@ plotPhenoRelations <- function(clin, ppr, rel.list, var.interest, threshold=0.05
                                    "\ntest =", test))
       }
     }
-  }else if(is.factor(y)){ # if a factor
-    for(i in 1:length(rel.list)){
+  }else if(is.factor(y))
+  { # if a factor
+    for(i in 1:length(rel.list))
+    {
       x <- clin[,names(rel.list)[i]]
-      p <- extractSignificant(ppr$p, interest = names(rel.list)[i], threshold = threshold)[[1]][var.interest]
-      q <- extractSignificant(ppr$q, interest = names(rel.list)[i], threshold = threshold)[[1]][var.interest]
-      test <- ppr$test[var.interest,names(rel.list)[i]]
-      if(is.numeric(x)){
+      # get the test results
+      p <- ppr$p[var.interest, names(rel.list)[i]]
+      q <- ppr$q[var.interest, names(rel.list)[i]]
+      test <- ppr$test[var.interest, names(rel.list)[i]]
+      
+      if(is.numeric(x))
+      {
         plot(x~y, ylab=names(rel.list)[i], xlab=var.interest, notch=T, col=col$category,
              pch=21, main=paste(names(rel.list)[i],
                                 "\np =", signif(p,digits=2),
                                 "; q =", signif(q,digits=2),
                                 "\ntest =", test))
-      }else{
-        plot(y~x, xlab=names(rel.list)[i], ylab=var.interest, col=col$category, pch=21, main=paste(names(rel.list)[i],
-                                                                                                   "\np =", signif(p,digits=2),
-                                                                                                   "; q =", signif(q,digits=2),
-                                                                                                   "\ntest =", test))
+      }else
+      {
+        plot(y~x, xlab=names(rel.list)[i], ylab=var.interest, col=col$category, 
+             pch=21, main=paste(names(rel.list)[i],
+                                "\np =", signif(p,digits=2),
+                                "; q =", signif(q,digits=2),
+                                "\ntest =", test))
       }
     }
   }else{ warning("Unknown type for the variable of interest!")}
@@ -369,19 +384,24 @@ runRelome <- function(data, interest = "", threshold=0.05,
   }
   
   # Richness linked phenotypes
-  if(zoom.p){
+  if(zoom.p)
+  {
     if(verbose) print("Selecting variables based on p-values")
-    rel <- lapply(extractSignificant(relation.matrix = ppr$p, interest = interest, threshold = threshold), sort, na.last=TRUE)
-  }else{
+    rel <- lapply(extractSignificant(relation.matrix = ppr$p, interest = interest, threshold = threshold), sort, na.last=FALSE)
+  }else
+  {
     if(verbose) print("Selecting variables based on q-values")
     rel <- lapply(extractSignificant(relation.matrix = ppr$q, interest = interest, threshold = threshold), sort, na.last=TRUE)
   }
   if(plot){
     if(verbose) print("Making plots")
-    for(i in 1:length(rel)){
-      if (length(rel)==1){
+    for(i in 1:length(rel))
+    {
+      if (length(rel)==1)
+      {
         file.name <- paste("relome_res_",i,"_", interest,".pdf",sep="")
-      }else{
+      }else
+      {
         file.name <- paste("relome_res_",i,"_", names(rel[i]),".pdf",sep="")
       }
       if(verbose) print(paste("Making plot", file.name))

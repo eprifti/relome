@@ -4,3 +4,8 @@ results <- runRelome(data = iris, interest = c("Species","Petal.Width"), thresho
                        mfrow = c(4,6), width = 15, height = 10, save.all=TRUE, rerun.all=TRUE,
                        col = list(scatter="gold2",category=gray.colors(2)))
 
+# results <- runRelome(data = dat_bc, interest = interest.all, threshold=0.5,
+#                      adjust = "BH", adjust.by.var = FALSE,
+#                      zoom.p = TRUE, verbose=TRUE, plot=TRUE,
+#                      mfrow = c(4,6), width = 15, height = 10, save.all=TRUE, rerun.all=TRUE,
+#                      col = list(scatter="red",category=gray.colors(2)))
