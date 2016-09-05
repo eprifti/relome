@@ -363,10 +363,18 @@ runRelome <- function(data, interest = "", threshold=0.05,
         file.name <- paste("relome_res_",i,"_", names(rel[i]),".pdf",sep="")
       }
       if(verbose) print(paste("Making plot", file.name))
-      pdf(file=file.name, width=width, height=height)
-      par(mfrow=mfrow)
-      plotPhenoRelations(clin = data, ppr = ppr, rel.list = rel[[i]], var.interest=interest[i], threshold = threshold, col=col)
-      dev.off()
+      if(length(rel[[i]])==0)
+      {
+        print("No significant relations here ...")
+      }else 
+      {
+        pdf(file=file.name, width=width, height=height)
+        par(mfrow=mfrow)
+        plotPhenoRelations(clin = data, ppr = ppr, rel.list = rel[[i]], var.interest=interest[i], threshold = threshold, col=col)
+        dev.off()
+      }
+      
+      
     }
   }
   return(list(ppr=ppr, rel=rel))
