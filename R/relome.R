@@ -114,7 +114,7 @@ plotPhenoRelations <- function(clin, ppr, rel.list, var.interest, threshold=0.05
 }
 
 # modified multiple test adjustment line by line instead of a whole 20151128 EP
-relome <- function (data, adjust = "BH", verbose = FALSE) {
+relome <- function (data, adjust = "BH", adjust.by.var = TRUE, verbose = FALSE) {
   # create an empty square matrix
   data.relations <- matrix(NA, ncol(data), ncol(data))
   colnames(data.relations) <- colnames(data)
@@ -140,7 +140,18 @@ relome <- function (data, adjust = "BH", verbose = FALSE) {
       }
     }
   }
-  data.relations.q <- apply(data.relations, 2, p.adjust, method=adjust)
+  if(adjust.by.var) # if we are testing only one variable with the rest we can adjust only for one variable for multiple testing
+  {
+    data.relations.q <- apply(data.relations, 2, p.adjust, method=adjust) # this is on the columns
+  }else # otherwise, we make a long vector with all the tests and run adjustment before transforming into a matrix again
+  {
+    # adjust all p-values
+    tmp <- p.adjust(as.vector(data.relations), method = adjust)
+    data.relations.q <- matrix(tmp, nrow = nrow(data.relations), byrow = FALSE)
+    colnames(data.relations.q) <- colnames(data.relations)
+    rownames(data.relations.q) <- rownames(data.relations)
+  }
+  
   return(list(p = data.relations, q = data.relations.q, test=data.relations.test))
 }
 
@@ -312,10 +323,11 @@ plotClinHistograms <- function(clin, clin.col = TRUE,
 #' @description Runs the different functions that are needed to compute and visualize relations beween variables.
 #' @param data: a data frame containing the variables to explore
 #' @param interest:
-#' @param threshold:
-#' @param adjust:
-#' @param zoom.p: 
-#' @param verbose: 
+#' @param threshold: significance threshold of the variables to extract.
+#' @param adjust: multiple testing adjustment method
+#' @param adjust.by.var: weather to adjust only for one variable of interest or for all the tests performed.
+#' @param zoom.p: use the p value as significance selector. If false it will be the adjusted p-value.
+#' @param verbose: print running information.
 #' @param plot: If TRUE produce the co-relation graphics.
 #' @param mfrow: grid disposition of the graph (default:c(4,6))
 #' @param width: PDF width in inches (default:15)
@@ -326,7 +338,8 @@ plotClinHistograms <- function(clin, clin.col = TRUE,
 #' @return an object containing the different results
 #' @export
 runRelome <- function(data, interest = "", threshold=0.05, 
-                      adjust = "BH", zoom.p = TRUE, verbose=TRUE,  plot=TRUE, 
+                      adjust = "BH", adjust.by.var = TRUE, zoom.p = TRUE, 
+                      verbose=TRUE,  plot=TRUE, 
                       mfrow = c(4,6), width = 15, height = 10, save.all=TRUE, rerun.all=FALSE,
                       col = list(scatter="gold2",category=gray.colors(2))){
   
@@ -340,7 +353,7 @@ runRelome <- function(data, interest = "", threshold=0.05,
       load("ppr.rda")
     }
   }else{
-    ppr <- relome(data = data, verbose = verbose, adjust = adjust)
+    ppr <- relome(data = data, verbose = verbose, adjust = adjust, adjust.by.var = adjust.by.var)
     if(save.all){
       save(ppr, file="ppr.rda", compress=TRUE)
     }
