@@ -142,7 +142,8 @@ relome <- function (data, adjust = "BH", adjust.by.var = TRUE, verbose = FALSE) 
   }
   if(adjust.by.var) # if we are testing only one variable with the rest we can adjust only for one variable for multiple testing
   {
-    data.relations.q <- apply(data.relations, 2, p.adjust, method=adjust) # this is on the columns
+    data.relations.q <- apply(data.relations, 2, p.adjust, method=adjust) # this is on the columns. 
+    # q-vqlues here tend to be smaller (more significant) than in the else when all tests are considered
   }else # otherwise, we make a long vector with all the tests and run adjustment before transforming into a matrix again
   {
     # adjust all p-values
@@ -288,6 +289,14 @@ extractSignificant <- function (relation.matrix, interest, threshold = 0.05) {
   return(res)
 }
 
+lmp <- function (modelobject) {
+  if (class(modelobject) != "lm") 
+    stop("Not an object of class 'lm' ")
+  f <- summary(modelobject)$fstatistic
+  p <- pf(f[1], f[2], f[3], lower.tail = F)
+  attributes(p) <- NULL
+  return(p)
+}
 
 # function that plots histograms and barplots of a given dataset for descriptive analyses
 plotClinHistograms <- function(clin, clin.col = TRUE, 
@@ -362,10 +371,10 @@ runRelome <- function(data, interest = "", threshold=0.05,
   # Richness linked phenotypes
   if(zoom.p){
     if(verbose) print("Selecting variables based on p-values")
-    rel <- lapply(extractSignificant(relation.matrix = ppr$p, interest = interest, threshold = threshold),sort)
+    rel <- lapply(extractSignificant(relation.matrix = ppr$p, interest = interest, threshold = threshold), sort, na.last=TRUE)
   }else{
     if(verbose) print("Selecting variables based on q-values")
-    rel <- lapply(extractSignificant(relation.matrix = ppr$q, interest = interest, threshold = threshold),sort)
+    rel <- lapply(extractSignificant(relation.matrix = ppr$q, interest = interest, threshold = threshold), sort, na.last=TRUE)
   }
   if(plot){
     if(verbose) print("Making plots")
@@ -393,13 +402,6 @@ runRelome <- function(data, interest = "", threshold=0.05,
 
 
 
-lmp <- function (modelobject) {
-  if (class(modelobject) != "lm") 
-    stop("Not an object of class 'lm' ")
-  f <- summary(modelobject)$fstatistic
-  p <- pf(f[1], f[2], f[3], lower.tail = F)
-  attributes(p) <- NULL
-  return(p)
-}
+
 
 
