@@ -373,8 +373,6 @@ runRelome <- function(data, interest = "", threshold=0.05,
         plotPhenoRelations(clin = data, ppr = ppr, rel.list = rel[[i]], var.interest=interest[i], threshold = threshold, col=col)
         dev.off()
       }
-      
-      
     }
   }
   return(list(ppr=ppr, rel=rel))
