@@ -182,7 +182,8 @@ all.test <- function (x, y, adjust = "BH", verbose = FALSE) {
         warning("This is particular case 1")
       }else {
         if (verbose) print("chisq.test") # log
-        p <- chisq.test(table(x, y))$p.value
+        #p <- chisq.test(table(x, y))$p.value
+        p <- chisq.test(x, y)$p.value
         test <- "chisq.test"
       }
     } else { # if y is a numerical
