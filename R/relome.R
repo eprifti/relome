@@ -178,11 +178,12 @@ all.test <- function (x, y, adjust = "BH", verbose = FALSE) {
   test <- "null"
   if (is.factor(x)) {
     if (is.factor(y)) { # if both variables are factors
-      if (nrow(table(x, y)) == 1 | ncol(table(x, y)) == 1 | sum(table(x, y)) == 0) {
+      if (nrow(table(x, y)) == 1 | ncol(table(x, y)) == 1 | sum(table(x, y)) == 0 | sum(rowSums(table(x,y))!=0)<2 | sum(rowSums(table(y,x))!=0)<2) {
         warning("This is particular case 1")
       }else {
         if (verbose) print("chisq.test") # log
         #p <- chisq.test(table(x, y))$p.value
+        
         p <- chisq.test(x, y)$p.value
         test <- "chisq.test"
       }
