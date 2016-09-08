@@ -315,8 +315,16 @@ lmp <- function (modelobject) {
   return(p)
 }
 
-
-resetFactors <- function(data=clinf, side=2, character.2.factor=TRUE){
+#' resetFactors function.
+#'
+#' @title resetFactors
+#' @description It will recreate the factor variable to relevel
+#' @param data: a data frame containing the variables to explore
+#' @param side: 2 for the columns, If something else the dataset will be transposed
+#' @param character.2.factor: should the character vectors be transformed to factor
+#' @return the updated data frame
+#' @export
+resetFactors <- function(data, side=2, character.2.factor=TRUE){
   
   if(side!=2)
   {
@@ -346,26 +354,38 @@ resetFactors <- function(data=clinf, side=2, character.2.factor=TRUE){
 }
 
 
-
-# function that plots histograms and barplots of a given dataset for descriptive analyses
-plotClinHistograms <- function(clin, clin.col = TRUE, 
-                               width=15, height=10, nom.file ="res.pdf", 
+#' plotClinHistograms function.
+#'
+#' @title plotClinHistograms
+#' @description function that plots histograms and barplots of a given dataset for descriptive analysis.
+#' @param data: a data frame containing the variables to explore
+#' @param side: 2 for the columns, If something else the dataset will be transposed
+#' @param width: pdf width
+#' @param height: pdf height
+#' @param filename: pdf file name
+#' @param mfrow: pdf mfrow
+#' @param verbose: print information on the execution process
+#' @param col: colors for the histograms
+#' @return nothing
+#' @export
+plotClinHistograms <- function(data, side = 2, 
+                               width=15, height=10, filename ="res.pdf", 
                                mfrow=c(4,7), verbose=TRUE, 
                                col=c("blueviolet","cornflowerblue","black")){
-  # clinical in columns
-  if(!clin.col){
+  # side in columns
+  if(side!=2){
     print("Transposing data!")
-    clin <- as.data.frame(t(clin))
+    data <- as.data.frame(t(data))
   }
-  pdf(file=nom.file, width=width, height=height)
+  pdf(file=filename, width=width, height=height)
   par(mfrow=mfrow)
-  for(i in 1:ncol(clin)){
-    name <- colnames(clin)[i]
-    x <- clin[,i]
+  for(i in 1:ncol(data)){
+    name <- colnames(data)[i]
+    x <- data[,i]
     if(verbose) print(paste(i,name))
     if(is.factor(x)){
       plot(x, main = name, xlab = "", col=col[1], las=2)  
-    }else if(is.numeric(clin[,i])){
+    }else if(is.numeric(data[,i])){
       hist(x, main = name, xlab = "", col=col[2])    
     }else{
       warning("printing this as a date")
@@ -446,7 +466,7 @@ runRelome <- function(data, interest = "", threshold=0.05,
       {
         pdf(file=file.name, width=width, height=height)
         par(mfrow=mfrow)
-        plotPhenoRelations(clin = data, ppr = ppr, rel.list = rel[[i]], var.interest=interest[i], threshold = threshold, col=col)
+        plotPhenoRelations(data = data, ppr = ppr, rel.list = rel[[i]], var.interest=interest[i], threshold = threshold, col=col)
         dev.off()
       }
     }

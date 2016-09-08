@@ -5,16 +5,23 @@
 \title{runRelome}
 \usage{
 runRelome(data, interest = "", threshold = 0.05, adjust = "BH",
-  zoom.p = TRUE, verbose = TRUE, plot = TRUE, mfrow = c(4, 6),
-  width = 15, height = 10, save.all = TRUE, rerun.all = FALSE,
-  col = list(scatter = "gold2", category = gray.colors(2)))
+  adjust.by.var = TRUE, zoom.p = TRUE, verbose = TRUE, plot = TRUE,
+  mfrow = c(4, 6), width = 15, height = 10, save.all = TRUE,
+  rerun.all = FALSE, col = list(scatter = "gold2", category =
+  gray.colors(2)))
 }
 \arguments{
 \item{data:}{a data frame containing the variables to explore}
 
-\item{zoom.p:}{}
+\item{threshold:}{significance threshold of the variables to extract.}
 
-\item{verbose:}{}
+\item{adjust:}{multiple testing adjustment method}
+
+\item{adjust.by.var:}{weather to adjust only for one variable of interest or for all the tests performed.}
+
+\item{zoom.p:}{use the p value as significance selector. If false it will be the adjusted p-value.}
+
+\item{verbose:}{print running information.}
 
 \item{plot:}{If TRUE produce the co-relation graphics.}
 
