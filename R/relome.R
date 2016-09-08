@@ -19,13 +19,13 @@
 
 
 # This function plots tests, p and q values for relations using the phenoPairwiseRelations object
-plotRelations <- function(clin, ppr, rel.list, var.interest, threshold=0.05, 
+plotRelations <- function(data, ppr, rel.list, var.interest, threshold=0.05, 
                           verbose=FALSE, col=list(scatter="gold2",category=gray.colors(2))){
-  y <- clin[,var.interest]
+  y <- data[,var.interest]
   if(is.numeric(y)){
     for(i in 1:length(rel.list)){
       if (verbose) print(paste(i,names(rel.list)[i]))
-      x <- clin[,names(rel.list)[i]]
+      x <- data[,names(rel.list)[i]]
       p <- extractSignificant(ppr$p, interest = names(rel.list)[i], threshold = threshold)[[1]][var.interest]
       q <- extractSignificant(ppr$q, interest = names(rel.list)[i], threshold = threshold)[[1]][var.interest]
       test <- ppr$test[var.interest,names(rel.list)[i]]
@@ -46,7 +46,7 @@ plotRelations <- function(clin, ppr, rel.list, var.interest, threshold=0.05,
     }
   }else if(is.factor(y)){ # if a factor
     for(i in 1:length(rel.list)){
-      x <- clin[,names(rel.list)[i]]
+      x <- data[,names(rel.list)[i]]
       p <- extractSignificant(ppr$p, interest = names(rel.list)[i], threshold = threshold)[[1]][var.interest]
       q <- extractSignificant(ppr$q, interest = names(rel.list)[i], threshold = threshold)[[1]][var.interest]
       test <- ppr$test[var.interest,names(rel.list)[i]]
@@ -67,14 +67,14 @@ plotRelations <- function(clin, ppr, rel.list, var.interest, threshold=0.05,
 }
 
 
-plotPhenoRelations <- function(clin, ppr, rel.list, var.interest, threshold=0.05, verbose=FALSE, col=list(scatter="gold2",category=gray.colors(2))){
-  y <- clin[,var.interest]
+plotPhenoRelations <- function(data, ppr, rel.list, var.interest, threshold=0.05, verbose=FALSE, col=list(scatter="gold2",category=gray.colors(2))){
+  y <- data[,var.interest]
   if(is.numeric(y))
   {
     for(i in 1:length(rel.list))
     {
       if (verbose) print(paste(i,names(rel.list)[i]))
-      x <- clin[,names(rel.list)[i]]
+      x <- data[,names(rel.list)[i]]
       # p <- extractSignificant(ppr$p, interest = names(rel.list)[i], threshold = threshold)[[1]][var.interest]
       # q <- extractSignificant(ppr$q, interest = names(rel.list)[i], threshold = threshold)[[1]][var.interest]
       # get the test results
@@ -103,7 +103,7 @@ plotPhenoRelations <- function(clin, ppr, rel.list, var.interest, threshold=0.05
   { # if a factor
     for(i in 1:length(rel.list))
     {
-      x <- clin[,names(rel.list)[i]]
+      x <- data[,names(rel.list)[i]]
       # get the test results
       p <- ppr$p[var.interest, names(rel.list)[i]]
       q <- ppr$q[var.interest, names(rel.list)[i]]
