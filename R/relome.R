@@ -315,6 +315,38 @@ lmp <- function (modelobject) {
   return(p)
 }
 
+
+resetFactors <- function(data=clinf, side=2, character.2.factor=TRUE){
+  
+  if(side!=2)
+  {
+    res <- data.frame(t(data))
+  }else
+  {
+    res <- data.frame(data)  
+  }
+  
+  types <- sapply(data.frame(res), class)
+  
+  for(i in 1:ncol(res))
+  {
+    if(types[i]=="factor")
+    {
+      res[,i] <- as.factor(as.character(data[,i]))  
+    }
+    if(character.2.factor)
+    {
+      if(types[i]=="character")
+      {
+        res[,i] <- as.factor(as.character(data[,i]))  
+      }
+    }
+  }
+  return(res)  
+}
+
+
+
 # function that plots histograms and barplots of a given dataset for descriptive analyses
 plotClinHistograms <- function(clin, clin.col = TRUE, 
                                width=15, height=10, nom.file ="res.pdf", 
