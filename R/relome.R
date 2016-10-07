@@ -413,13 +413,14 @@ plotClinHistograms <- function(data, side = 2,
 #' @param save.all: weather to save intermediary files (default:TRUE)
 #' @param return.all: weather to return all the results (default:TRUE)
 #' @param col: a list containg colot information for the graphs, scatterplots and tables.
+#' @param inpdf: if TRUE the plots will be saved in a pdf, otherwise  they will be sent to the default canvas.
 #' @return an object containing the different results
 #' @export
 runRelome <- function(data, interest = "", threshold=0.05, 
                       adjust = "BH", adjust.by.var = TRUE, zoom.p = TRUE, 
                       verbose=TRUE,  plot=TRUE, 
                       mfrow = c(4,6), width = 15, height = 10, save.all=TRUE, rerun.all=FALSE,
-                      col = list(scatter="gold2",category=gray.colors(2))){
+                      col = list(scatter="gold2",category=gray.colors(2)), inpdf=TRUE){
   
   if(file.exists("ppr.rda")){
     if(rerun.all){
@@ -464,10 +465,17 @@ runRelome <- function(data, interest = "", threshold=0.05,
         print("No significant relations here ...")
       }else 
       {
-        pdf(file=file.name, width=width, height=height)
-        par(mfrow=mfrow)
-        plotPhenoRelations(data = data, ppr = ppr, rel.list = rel[[i]], var.interest=interest[i], threshold = threshold, col=col)
-        dev.off()
+        if(inpdf)
+        {
+          pdf(file=file.name, width=width, height=height)
+          par(mfrow=mfrow)
+          plotPhenoRelations(data = data, ppr = ppr, rel.list = rel[[i]], var.interest=interest[i], threshold = threshold, col=col)
+          dev.off()
+        }else
+        {
+          par(mfrow=mfrow)
+          plotPhenoRelations(data = data, ppr = ppr, rel.list = rel[[i]], var.interest=interest[i], threshold = threshold, col=col)
+        }
       }
     }
   }
