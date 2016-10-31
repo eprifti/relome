@@ -20,7 +20,12 @@
 
 # This function plots tests, p and q values for relations using the phenoPairwiseRelations object
 plotRelations <- function(data, ppr, rel.list, var.interest, threshold=0.05, 
-                          verbose=FALSE, col=list(scatter="gold2",category=gray.colors(2))){
+                          verbose=FALSE, 
+                          col=list(scatter="gold2",
+                                   category=gray.colors(2)),
+                          pch=21
+                          )
+{
   y <- data[,var.interest]
   if(is.numeric(y)){
     for(i in 1:length(rel.list)){
@@ -31,14 +36,14 @@ plotRelations <- function(data, ppr, rel.list, var.interest, threshold=0.05,
       test <- ppr$test[var.interest,names(rel.list)[i]]
       if(is.numeric(x)){
         plot(y~x, xlab=names(rel.list)[i], ylab=var.interest,
-             bg=col$scatter, pch=21, main=paste(names(rel.list)[i],
+             bg=col$scatter, pch=pch, main=paste(names(rel.list)[i],
                                                 "\np =", signif(p,digits=2),
                                                 "; q =", signif(q,digits=2),
                                                 "\ntest =", test))
         abline(lm(y~x),col="red")
       }else{
         boxplot(y~x, xlab=names(rel.list)[i], ylab=var.interest, notch=T, col=gray.colors(length(levels(x))),
-                pch=21, main=paste(names(rel.list)[i],
+                pch=pch, main=paste(names(rel.list)[i],
                                    "\np =", signif(p,digits=2),
                                    "; q =", signif(q,digits=2),
                                    "\ntest =", test))
@@ -52,12 +57,12 @@ plotRelations <- function(data, ppr, rel.list, var.interest, threshold=0.05,
       test <- ppr$test[var.interest,names(rel.list)[i]]
       if(is.numeric(x)){
         plot(x~y, ylab=names(rel.list)[i], xlab=var.interest, notch=T, col=col$category,
-             pch=21, main=paste(names(rel.list)[i],
+             pch=pch, main=paste(names(rel.list)[i],
                                 "\np =", signif(p,digits=2),
                                 "; q =", signif(q,digits=2),
                                 "\ntest =", test))
       }else{
-        plot(y~x, xlab=names(rel.list)[i], ylab=var.interest, col=col$category, pch=21, main=paste(names(rel.list)[i],
+        plot(y~x, xlab=names(rel.list)[i], ylab=var.interest, col=col$category, pch=pch, main=paste(names(rel.list)[i],
                                                                                                    "\np =", signif(p,digits=2),
                                                                                                    "; q =", signif(q,digits=2),
                                                                                                    "\ntest =", test))
@@ -67,7 +72,17 @@ plotRelations <- function(data, ppr, rel.list, var.interest, threshold=0.05,
 }
 
 
-plotPhenoRelations <- function(data, ppr, rel.list, var.interest, threshold=0.05, verbose=FALSE, col=list(scatter="gold2",category=gray.colors(2))){
+plotPhenoRelations <- function(data, 
+                               ppr, 
+                               rel.list, 
+                               var.interest, 
+                               threshold=0.05, 
+                               verbose=FALSE, 
+                               col=list(scatter="gold2",
+                                        category=gray.colors(2)),
+                               pch=21
+                               )
+{
   y <- data[,var.interest]
   if(is.numeric(y))
   {
@@ -85,7 +100,7 @@ plotPhenoRelations <- function(data, ppr, rel.list, var.interest, threshold=0.05
       if(is.numeric(x))
       {
         plot(y~x, xlab=names(rel.list)[i], ylab=var.interest,
-             bg=col$scatter, pch=21, main=paste(names(rel.list)[i],
+             bg=col$scatter, pch=pch, main=paste(names(rel.list)[i],
                                                 "\np =", signif(p,digits=2),
                                                 "; q =", signif(q,digits=2),
                                                 "\ntest =", test))
@@ -93,7 +108,7 @@ plotPhenoRelations <- function(data, ppr, rel.list, var.interest, threshold=0.05
       }else
       {
         boxplot(y~x, xlab=names(rel.list)[i], ylab=var.interest, notch=T, col=gray.colors(length(levels(x))),
-                pch=21, main=paste(names(rel.list)[i],
+                pch=pch, main=paste(names(rel.list)[i],
                                    "\np =", signif(p,digits=2),
                                    "; q =", signif(q,digits=2),
                                    "\ntest =", test))
@@ -112,14 +127,14 @@ plotPhenoRelations <- function(data, ppr, rel.list, var.interest, threshold=0.05
       if(is.numeric(x))
       {
         plot(x~y, ylab=names(rel.list)[i], xlab=var.interest, notch=T, col=col$category,
-             pch=21, main=paste(names(rel.list)[i],
+             pch=pch, main=paste(names(rel.list)[i],
                                 "\np =", signif(p,digits=2),
                                 "; q =", signif(q,digits=2),
                                 "\ntest =", test))
       }else
       {
         plot(y~x, xlab=names(rel.list)[i], ylab=var.interest, col=col$category, 
-             pch=21, main=paste(names(rel.list)[i],
+             pch=pch, main=paste(names(rel.list)[i],
                                 "\np =", signif(p,digits=2),
                                 "; q =", signif(q,digits=2),
                                 "\ntest =", test))
@@ -413,6 +428,7 @@ plotClinHistograms <- function(data, side = 2,
 #' @param save.all: weather to save intermediary files (default:TRUE)
 #' @param return.all: weather to return all the results (default:TRUE)
 #' @param col: a list containg colot information for the graphs, scatterplots and tables.
+#' @param pch: the point shape for the scatterplot
 #' @param inpdf: if TRUE the plots will be saved in a pdf, otherwise  they will be sent to the default canvas (default:TRUE).
 #' @return an object containing the different results
 #' @export
@@ -420,7 +436,12 @@ runRelome <- function(data, interest = "", threshold=0.05,
                       adjust = "BH", adjust.by.var = TRUE, zoom.p = TRUE, 
                       verbose=TRUE,  plot=TRUE, 
                       mfrow = c(4,6), width = 15, height = 10, save.all=TRUE, rerun.all=FALSE,
-                      col = list(scatter="gold2",category=gray.colors(2)), inpdf=TRUE){
+                      col = list(scatter="gold2",
+                                 category=gray.colors(2)),
+                      pch=21,
+                      inpdf=TRUE
+                      )
+{
   
   if(file.exists("ppr.rda")){
     if(rerun.all){
@@ -469,12 +490,12 @@ runRelome <- function(data, interest = "", threshold=0.05,
         {
           pdf(file=file.name, width=width, height=height)
           par(mfrow=mfrow)
-          plotPhenoRelations(data = data, ppr = ppr, rel.list = rel[[i]], var.interest=interest[i], threshold = threshold, col=col)
+          plotPhenoRelations(data = data, ppr = ppr, rel.list = rel[[i]], var.interest=interest[i], threshold = threshold, col=col, pch=pch)
           dev.off()
         }else
         {
           par(mfrow=mfrow)
-          plotPhenoRelations(data = data, ppr = ppr, rel.list = rel[[i]], var.interest=interest[i], threshold = threshold, col=col)
+          plotPhenoRelations(data = data, ppr = ppr, rel.list = rel[[i]], var.interest=interest[i], threshold = threshold, col=col, pch=pch)
         }
       }
     }
