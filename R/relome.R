@@ -497,7 +497,7 @@ runRelome <- function(data, interest = "", threshold=0.05,
         {
           pdf(file=file.name, width=width, height=height)
           par(mfrow=mfrow)
-          plotPhenoRelations(data = data, ppr = ppr, rel.list = rel[[i]], var.interest=interest[i], threshold = threshold, bg=bg, col=col, ch=pch)
+          plotPhenoRelations(data = data, ppr = ppr, rel.list = rel[[i]], var.interest=interest[i], threshold = threshold, bg=bg, col=col, pch=pch)
           dev.off()
         }else
         {
