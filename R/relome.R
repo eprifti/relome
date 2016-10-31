@@ -21,8 +21,10 @@
 # This function plots tests, p and q values for relations using the phenoPairwiseRelations object
 plotRelations <- function(data, ppr, rel.list, var.interest, threshold=0.05, 
                           verbose=FALSE, 
-                          col=list(scatter="gold2",
+                          bg=list(scatter="gold2",
                                    category=gray.colors(2)),
+                          col=list(scatter="black",
+                                  category=gray.colors(2)),
                           pch=21
                           )
 {
@@ -36,7 +38,7 @@ plotRelations <- function(data, ppr, rel.list, var.interest, threshold=0.05,
       test <- ppr$test[var.interest,names(rel.list)[i]]
       if(is.numeric(x)){
         plot(y~x, xlab=names(rel.list)[i], ylab=var.interest,
-             bg=col$scatter, pch=pch, main=paste(names(rel.list)[i],
+             bg=bg$scatter, pch=pch, main=paste(names(rel.list)[i],
                                                 "\np =", signif(p,digits=2),
                                                 "; q =", signif(q,digits=2),
                                                 "\ntest =", test))
@@ -78,7 +80,9 @@ plotPhenoRelations <- function(data,
                                var.interest, 
                                threshold=0.05, 
                                verbose=FALSE, 
-                               col=list(scatter="gold2",
+                               bg=list(scatter="gold2",
+                                        category=gray.colors(2)),
+                               col=list(scatter="black",
                                         category=gray.colors(2)),
                                pch=21
                                )
@@ -100,11 +104,11 @@ plotPhenoRelations <- function(data,
       if(is.numeric(x))
       {
         plot(y~x, xlab=names(rel.list)[i], ylab=var.interest,
-             bg=col$scatter, pch=pch, main=paste(names(rel.list)[i],
+             bg=bg$scatter, col=col$scatter, pch=pch, main=paste(names(rel.list)[i],
                                                 "\np =", signif(p,digits=2),
                                                 "; q =", signif(q,digits=2),
                                                 "\ntest =", test))
-        abline(lm(y~x),col="red")
+        abline(lm(y~x), col="red")
       }else
       {
         boxplot(y~x, xlab=names(rel.list)[i], ylab=var.interest, notch=T, col=gray.colors(length(levels(x))),
@@ -436,7 +440,9 @@ runRelome <- function(data, interest = "", threshold=0.05,
                       adjust = "BH", adjust.by.var = TRUE, zoom.p = TRUE, 
                       verbose=TRUE,  plot=TRUE, 
                       mfrow = c(4,6), width = 15, height = 10, save.all=TRUE, rerun.all=FALSE,
-                      col = list(scatter="gold2",
+                      bg = list(scatter="gold2",
+                                 category=gray.colors(2)),
+                      col = list(scatter="black",
                                  category=gray.colors(2)),
                       pch=21,
                       inpdf=TRUE
