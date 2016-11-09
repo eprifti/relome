@@ -405,7 +405,13 @@ plotClinHistograms <- function(data, side = 2,
     if(is.factor(x)){
       plot(x, main = name, xlab = "", col=col[1], las=2)  
     }else if(is.numeric(data[,i])){
-      hist(x, main = name, xlab = "", col=col[2])    
+      if(all(is.na(x)))
+      {
+        plot.new()        
+      }else
+      {
+        hist(x, main = name, xlab = "", col=col[2])  
+      }
     }else{
       warning("printing this as a date")
       plot(as.Date(x), main = name, xlab = "",col=col[3]) 
