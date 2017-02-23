@@ -22,4 +22,3 @@ It will recreate the factor variable to relevel
 \details{
 resetFactors function.
 }
-

@@ -7,11 +7,14 @@
 runRelome(data, interest = "", threshold = 0.05, adjust = "BH",
   adjust.by.var = TRUE, zoom.p = TRUE, verbose = TRUE, plot = TRUE,
   mfrow = c(4, 6), width = 15, height = 10, save.all = TRUE,
-  rerun.all = FALSE, col = list(scatter = "gold2", category =
-  gray.colors(2)))
+  rerun.all = FALSE, bg = list(scatter = "gold2", category =
+  gray.colors(2)), col = list(scatter = "black", category = gray.colors(2)),
+  pch = 21, inpdf = TRUE)
 }
 \arguments{
 \item{data:}{a data frame containing the variables to explore}
+
+\item{interest:}{a subset of variables to be extracted and used to focus the analysis}
 
 \item{threshold:}{significance threshold of the variables to extract.}
 
@@ -35,7 +38,13 @@ runRelome(data, interest = "", threshold = 0.05, adjust = "BH",
 
 \item{return.all:}{weather to return all the results (default:TRUE)}
 
-\item{col:}{a list containg colot information for the graphs, scatterplots and tables.}
+\item{bg:}{a list containg background color information for the graphs, scatterplots and tables.}
+
+\item{col:}{a list containg border color information for the graphs, scatterplots and tables.}
+
+\item{pch:}{the point shape for the scatterplot}
+
+\item{inpdf:}{if TRUE the plots will be saved in a pdf, otherwise  they will be sent to the default canvas (default:TRUE).}
 }
 \value{
 an object containing the different results
@@ -46,4 +55,3 @@ Runs the different functions that are needed to compute and visualize relations 
 \details{
 main runRelome function.
 }
-

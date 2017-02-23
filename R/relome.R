@@ -396,28 +396,39 @@ plotClinHistograms <- function(data, side = 2,
     print("Transposing data!")
     data <- as.data.frame(t(data))
   }
+  
+  # make the plot
   pdf(file=filename, width=width, height=height)
   par(mfrow=mfrow)
-  for(i in 1:ncol(data)){
+  for(i in 1:ncol(data))
+  {
     name <- colnames(data)[i]
     x <- data[,i]
-    if(verbose) print(paste(i,name))
-    if(is.factor(x)){
-      plot(x, main = name, xlab = "", col=col[1], las=2)  
-    }else if(is.numeric(data[,i])){
-      if(all(is.na(x)))
+    
+    if(verbose) print(paste(i, name))
+    
+    if(all(is.na(x))) # if everything is empty plot empty
+    {
+      plot.new()
+    }else
+    {
+      if(is.factor(x))
       {
-        plot.new()        
+        plot(x, main = name, xlab = "", col=col[1], las=2)  
       }else
       {
-        hist(x, main = name, xlab = "", col=col[2])  
+        if(is.numeric(x))
+        {
+          hist(x, main = name, xlab = "", col=col[2])  
+        }else
+        {
+          warning("printing this as a date")
+          plot(as.Date(x), main = name, xlab = "",col=col[3]) 
+        }
       }
-    }else{
-      warning("printing this as a date")
-      plot(as.Date(x), main = name, xlab = "",col=col[3]) 
-    }
-  }
-  dev.off()
+    } # end else empty
+  } # end loop variable
+  dev.off() # close pdf
 }
 
 #' main runRelome function.
@@ -425,7 +436,7 @@ plotClinHistograms <- function(data, side = 2,
 #' @title runRelome
 #' @description Runs the different functions that are needed to compute and visualize relations beween variables.
 #' @param data: a data frame containing the variables to explore
-#' @param interest:
+#' @param interest: a subset of variables to be extracted and used to focus the analysis
 #' @param threshold: significance threshold of the variables to extract.
 #' @param adjust: multiple testing adjustment method
 #' @param adjust.by.var: weather to adjust only for one variable of interest or for all the tests performed.

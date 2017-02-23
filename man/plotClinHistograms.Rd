@@ -34,4 +34,3 @@ function that plots histograms and barplots of a given dataset for descriptive a
 \details{
 plotClinHistograms function.
 }
-
