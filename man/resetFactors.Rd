@@ -4,7 +4,7 @@
 \alias{resetFactors}
 \title{resetFactors}
 \usage{
-resetFactors(data, side = 2, character.2.factor = TRUE)
+resetFactors(data, side = 2, character.2.factor = TRUE, verbose = FALSE)
 }
 \arguments{
 \item{data:}{a data frame containing the variables to explore}
@@ -12,6 +12,8 @@ resetFactors(data, side = 2, character.2.factor = TRUE)
 \item{side:}{2 for the columns, If something else the dataset will be transposed}
 
 \item{character.2.factor:}{should the character vectors be transformed to factor}
+
+\item{verbose:}{print information on the variables that are treated (default:FALSE)}
 }
 \value{
 the updated data frame

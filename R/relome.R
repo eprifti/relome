@@ -341,9 +341,17 @@ lmp <- function (modelobject) {
 #' @param data: a data frame containing the variables to explore
 #' @param side: 2 for the columns, If something else the dataset will be transposed
 #' @param character.2.factor: should the character vectors be transformed to factor
+#' @param verbose: print information on the variables that are treated (default:FALSE)
 #' @return the updated data frame
 #' @export
-resetFactors <- function(data, side=2, character.2.factor=TRUE){
+resetFactors <- function(data, side = 2, character.2.factor = TRUE, verbose = FALSE)
+{
+  
+  if(length(class(data)) > 1)
+  {
+    warning("resetFactors: class data type is not data.frame")
+    data <- as.data.frame(mpg)
+  }
   
   if(side!=2)
   {
@@ -357,6 +365,10 @@ resetFactors <- function(data, side=2, character.2.factor=TRUE){
   
   for(i in 1:ncol(res))
   {
+    if(verbose)
+    {
+      print(paste(i,"   =>   ",colnames(data)[i]))
+    }
     if(types[i]=="factor")
     {
       res[,i] <- as.factor(as.character(data[,i]))  
@@ -395,6 +407,12 @@ plotClinHistograms <- function(data, side = 2,
   if(side!=2){
     print("Transposing data!")
     data <- as.data.frame(t(data))
+  }
+  
+  if(length(class(data)) > 1)
+  {
+    warning("plotClinHistograms: class data type is not data.frame")
+    data <- as.data.frame(mpg)
   }
   
   # make the plot
