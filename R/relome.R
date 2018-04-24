@@ -350,7 +350,7 @@ resetFactors <- function(data, side = 2, character.2.factor = TRUE, verbose = FA
   if(length(class(data)) > 1)
   {
     warning("resetFactors: class data type is not data.frame")
-    data <- as.data.frame(mpg)
+    data <- as.data.frame(data)
   }
   
   if(side!=2)
@@ -412,7 +412,7 @@ plotClinHistograms <- function(data, side = 2,
   if(length(class(data)) > 1)
   {
     warning("plotClinHistograms: class data type is not data.frame")
-    data <- as.data.frame(mpg)
+    data <- as.data.frame(data)
   }
   
   # make the plot
