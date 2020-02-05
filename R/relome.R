@@ -161,17 +161,57 @@ relome <- function (data, adjust = "BH", adjust.by.var = TRUE, verbose = FALSE) 
       if (verbose) cat("\t",paste(j, colnames(data)[j]),";\t") # log
       x <- data[, i]
       y <- data[, j]
-      if((is.numeric(x) & var(x, na.rm = TRUE)==0) | (is.numeric(y) & var(y, na.rm = TRUE)==0) | 
-         (is.factor(x) & length(levels(x))<=1) | (is.factor(y) & length(levels(y))<=1)){
-        if (verbose) print("This test was not performed due to low variance or number of levels")
-        data.relations[i, j] <- NA
-        data.relations.test[i, j] <- NA
-      }else{
-        res <- all.test(x,y)
-        if (verbose) cat(res$test,"\n") # log
-        data.relations[i, j] <- res$p
-        data.relations.test[i, j] <- res$test
+      
+      
+      if(is.numeric(x))
+      {
+        if(var(x, na.rm = TRUE)==0)
+        {
+          if (verbose) print("This test was not performed due to low variance")
+          data.relations[i, j] <- NA
+          data.relations.test[i, j] <- NA
+          next
+        }
       }
+      
+      if(is.numeric(y))
+      {
+        if(var(y, na.rm = TRUE)==0)
+        {
+          if (verbose) print("This test was not performed due to low variance")
+          data.relations[i, j] <- NA
+          data.relations.test[i, j] <- NA
+          next
+        }
+      }
+      
+      if(is.factor(x))
+      {
+        if(length(levels(x))<=1)
+        {
+          if (verbose) print("This test was not performed due to low number of levels")
+          data.relations[i, j] <- NA
+          data.relations.test[i, j] <- NA
+          next
+        }
+      }
+      
+      if(is.factor(y))
+      {
+        if(length(levels(y))<=1)
+        {
+          if (verbose) print("This test was not performed due to low number of levels")
+          data.relations[i, j] <- NA
+          data.relations.test[i, j] <- NA
+          next
+        }
+      }    
+        
+      res <- all.test(x,y)
+      if (verbose) cat(res$test,"\n") # log
+      data.relations[i, j] <- res$p
+      data.relations.test[i, j] <- res$test
+      
     }
   }
   if(adjust.by.var) # if we are testing only one variable with the rest we can adjust only for one variable for multiple testing
@@ -193,6 +233,130 @@ relome <- function (data, adjust = "BH", adjust.by.var = TRUE, verbose = FALSE) 
 
 # modified multiple test adjustment line by line instead of a whole 20151128 EP
 all.test <- function (x, y, adjust = "BH", verbose = FALSE) {
+  p <- NA
+  test <- "null"
+  if (is.factor(x)) {
+    if (is.factor(y)) { # if both variables are factors
+      if (nrow(table(x, y)) == 1 | ncol(table(x, y)) == 1 | sum(table(x, y)) == 0 | sum(rowSums(table(x,y))!=0)<2 | sum(rowSums(table(y,x))!=0)<2) {
+        warning("This is particular case 1")
+      }else {
+        if (verbose) print("chisq.test") # log
+        #p <- chisq.test(table(x, y))$p.value
+        
+        p <- chisq.test(x, y)$p.value
+        test <- "chisq.test"
+      }
+    } else { # if y is a numerical
+      if(length(na.omit(y))>4){ # sanity check
+        if (nortest::lillie.test(y)$p.value > 0.05) { # if non normal distribution
+          if (length(table(x)) > 1) {
+            if (length(table(x)) == 2) {
+              if (all(colSums(table(y, x)) > 1)) {
+                if (verbose) print("t.test") # log
+                p <- t.test(y ~ x)$p.value
+                test <- "t.test"
+              }
+            }else { # if more than two categories use a linear model
+              if (sum(table(y, x)) > 1 & length(unique(x[!is.na(x)])) !=  1 & sum(colSums(table(y, x)) > 0) > 1) {
+                if (verbose) print("linear model") # log
+                tmp <- lmp(lm(y ~ x))
+                if (!is.null(tmp)) {
+                  p <- tmp
+                  test <- "linear model"
+                } # end is null result from linear model
+              }
+            }
+          }
+        } # end nortest
+        else { # if non normal
+          if (length(table(x)) > 1) {
+            if (length(table(x)) == 2) {
+              if (all(colSums(table(y, x)) > 1)) {
+                if (verbose) print("wilcox.test") # log
+                p <- wilcox.test(y ~ x)$p.value
+                test <- "wilcox.test"
+              }
+            }else {
+              if (sum(table(y, x)) > 1 & length(unique(x[!is.na(x)])) != 1 & sum(colSums(table(y, x)) > 0) > 1) {
+                if (verbose) print("kruskal.test") # log
+                tmp <- kruskal.test(y ~ x)
+                if (!is.null(tmp)) {
+                  p <- tmp$p.value
+                  test <- "kruskal.test"
+                } # end is null result from linear model
+              } # end validity of the test
+            } # end else
+          } # end at least two categories
+        } # end else normality
+      } # sanity check
+    } # end else numerical
+  } # end x factor
+  else { # If x is numerical
+    if (is.factor(y)) { # and y is a factor
+      if(length(na.omit(x))>4){ # sanity check
+        if (nortest::lillie.test(x)$p.value > 0.05) { # if normal
+          if (length(table(y)) > 1) { # if at least two factors
+            if (length(table(y)) == 2) { # if exactly 2
+              if (all(colSums(table(x, y)) > 1)) {
+                if (verbose) print("t.test") # log
+                p <- t.test(x ~ y)$p.value
+                test <- "t.test"
+              }
+            }
+            else {
+              if (sum(table(x, y)) > 1 & length(unique(y[!is.na(y)])) != 1 & sum(colSums(table(x, y)) > 0) > 1) {
+                if (verbose) print("linear model") # log
+                tmp <- lmp(lm(x ~ y))
+                if (!is.null(tmp)) {
+                  p <- tmp
+                  test <- "lm"
+                }
+              }
+            }
+          }
+        } # end normality
+        else { # if non normal
+          if (length(table(y)) > 1) {
+            if (length(table(y)) == 2) { # if only two categories
+              if (all(colSums(table(x, y)) > 1)) {
+                if (verbose) print("wilcox.test") # log
+                p <- wilcox.test(x ~ y)$p.value
+                test <- "wilcox.test"
+              }
+            } else {
+              if (sum(table(x, y)) > 1 & length(unique(y[!is.na(y)])) != 1 & sum(colSums(table(x, y)) > 0) > 1) {
+                if (verbose) print("kruskal.test") # log
+                tmp <- kruskal.test(x ~ y)
+                if (!is.null(tmp)) {
+                  p <- tmp$p.value
+                  test <- "kruskal.test"
+                } # end is null
+              } # end validity kurskal
+            } 
+          } # end of testing at least one category
+        } # end else normality
+      } # end sanity check
+    } else { # if both variables are numeric
+      if (length(x[!is.na(x)]) > 4 & length(x[!is.na(y)]) > 4) {
+        if (nortest::lillie.test(x)$p.value < 0.05 | nortest::lillie.test(y)$p.value < 0.05) {
+          if (verbose) print("spearman correlation") # log
+          p <- Hmisc::rcorr(x, y, type = "spearman")$P[1, 2]
+          test <- "cor.spearman"
+        } else {
+          if (verbose) print("pearson correlation") # log
+          p <- Hmisc::rcorr(x, y, type = "pearson")$P[1, 2]
+          test <- "cor.pearson"
+        }
+      } # at least 4 values not na
+    } # end block numeric variables
+  }
+  return(list(p = p, test = test))
+}
+
+
+# A novel method that tests pairwisely a given test
+all.test.fixed <- function (x, y, adjust = "BH", verbose = FALSE) 
+{
   p <- NA
   test <- "null"
   if (is.factor(x)) {

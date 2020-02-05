@@ -1,15 +1,16 @@
 Package: relome
 Type: Package
 Title: Explore relation between omics variables.
-Version: 0.5
-Date: 2017-02-23
+Version: 0.6
+Date: 2020-02-04
 Author: Edi Prifti
 Maintainer: Edi Prifti <edi.prifti@gmail.com>
 Depends:
     R (> 2.15.0),
 Imports:
     momr,
-Description: The relome package contains methods and functions for exploring relations among different variables. It also allows to visualize them using network abstractions.
-License: GPL (>= 2)
+Description: The relome package contains methods and functions for exploring relations among different variables. 
+    It also allows to visualize them using network abstractions.
+License: GPL-3.0-only
 LazyData: TRUE
 RoxygenNote: 6.0.1
